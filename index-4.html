@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="#10251d" name="theme-color"/><style>*{box-sizing:border-box}body{margin:0;background:#0d1814;color:#f2f7f3;font:15px system-ui,-apple-system,Arial}button,select{font:inherit}button{cursor:pointer;touch-action:manipulation}header{padding:14px 18px;background:#173d2b;display:flex;align-items:center;justify-content:space-between;gap:10px}header b{font-size:19px}header em{font-size:11px;color:#c1ef9a;font-style:normal}header small{display:block;color:#c4d5cb;margin-top:4px}#status{border:1px solid #527e68;border-radius:20px;padding:5px 9px;font-size:12px}nav{display:flex;gap:8px;flex-wrap:wrap;padding:12px;background:#13251d;position:sticky;top:0;z-index:5}nav button,.action,#fireReset,#glassReset{border:1px solid #598573;background:#244b3c;color:white;padding:10px 12px;border-radius:9px}nav .selected{background:#067b50;outline:2px solid #9be2bd}#hint{background:#253b2d;border-left:5px solid #f4cf4e;margin:12px;border-radius:7px;padding:12px}.scroll{overflow:auto;padding:8px 12px 20px;overscroll-behavior-x:contain}#bench{width:1160px;min-height:1080px;position:relative}#wires{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}.benchgrid{display:grid;grid-template-columns:255px 585px 270px;gap:22px;align-items:start}.left,.right{display:grid;gap:14px}.device,.meter{background:#172b22;border:1px solid #3b6550;border-radius:14px;padding:14px;position:relative}.device h2,.meter h2{font-size:17px;margin:0 0 12px}.device p{font-size:12px;color:#c5d7cb}.deviceart{font-size:40px;text-align:center;background:#263c31;padding:10px;border-radius:8px}.deviceart span{display:block;font-size:11px}.pins{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.pins button,.pincol button{background:#244e38;border:2px solid #7caa8c;color:#fff;border-radius:7px;padding:9px 8px;font-weight:700;min-width:55px;position:relative;z-index:4}.pins button:active,.pincol button:active{background:#58aa7b}.pins button.marked,.pincol button.marked{outline:3px solid #f4cd4d}.push{border:5px solid #aaa;background:#c5cfca;color:#19251e;border-radius:100%;width:120px;height:120px;display:block;margin:12px auto;font-weight:900}.face{padding:15px 10px;background:#a63832;color:white;text-align:center;font-weight:800;border-radius:8px}.face.green{background:#168044}.face b{display:block;margin-top:6px}.device .action{margin:6px 0}.meter{background:#c7a32d;color:#18231b}.meter h2{color:#18231b}#reading{background:#b8d6bd;color:#162c1e;border:6px solid #303d32;border-radius:9px;padding:14px;text-align:right;font:700 36px monospace;white-space:nowrap}.meter p{font-size:12px;font-weight:800}.meter small{font-size:12px}.board{background:#e8d02a;color:#172419;border:8px solid #f4df45;border-radius:18px;box-shadow:inset 0 0 0 3px #bfa718,0 0 0 4px #185d51;min-height:910px;padding:9px;position:relative}.boardtop{display:flex;justify-content:space-between;align-items:start}.mount{font-size:27px;color:#a4a4a4}.topterm{text-align:center}.topterm label{font-size:12px;font-weight:800}.board .pins{justify-content:center}.board .pins button,.board .pincol button{background:#d9c329;color:#19261d;border:2px solid #4c5730;font-size:12px}.boardmain{display:grid;grid-template-columns:138px 1fr 147px;gap:6px;margin-top:10px}.banktitle{font-weight:900;font-size:12px;background:#b6a42a;padding:5px;margin-top:6px}.pincol{display:grid;gap:4px}.pincol button{text-align:left;padding:9px 6px;min-height:34px}.readerbank .pincol button{border-left:8px solid #266a43}.rightbank .pincol button{border-right:8px solid #266a43}.boardcenter{text-align:center;padding-top:38px}.boardbrand{font-size:31px;font-weight:900}.boardbrand strong{font-weight:400}.boardlabel{margin-top:18px;font-size:12px}.chip{margin:55px auto 24px;background:#465449;color:#eff7ef;border:5px solid #aab3aa;width:135px;height:115px;display:grid;place-content:center;font-size:20px;font-weight:900}.chip small{font-size:10px}.led{font-size:13px;font-weight:900}.led span,.light{display:inline-block;background:#66746c;width:14px;height:14px;border:2px solid #56725a;border-radius:50%;vertical-align:middle}.led span.on{background:#4aff50;box-shadow:0 0 12px #22f344}.boardbottom{margin-top:120px;text-align:left;font-size:12px;font-weight:800}.ethernet{display:block;font-size:46px;text-align:center;color:#375a65}.boardfooter{text-align:center;font-size:11px;margin:10px 0 0}.below{padding:12px;max-width:1150px;margin:auto}.below section{background:#172b22;border:1px solid #365843;border-radius:10px;margin:12px 0;padding:13px}.below h3{margin:0 0 10px}.stats{display:flex;gap:9px;flex-wrap:wrap}.stats span{background:#2c4c39;padding:8px;border-radius:6px}select{padding:10px;border-radius:7px;background:#244535;color:white;width:100%;max-width:440px}#wireList{display:flex;flex-wrap:wrap;gap:6px}#wireList button{background:#2e4839;color:#fff;border:1px solid #6b937b;padding:8px;border-radius:7px}.warning{font-size:12px;color:#e2c38c}@media(max-width:600px){header b{font-size:16px}nav button{padding:9px}#hint{font-size:13px}}
+
+/* V2.2 compact, zoomable training bench */
+body{background:#0b1712}header{padding:6px 12px}header b{font-size:15px}header small{display:inline;margin-left:10px;font-size:10px}nav{padding:5px 8px;gap:4px;position:relative}nav button{padding:6px 9px;font-size:12px;border-radius:6px}#hint{margin:4px 8px;padding:5px 9px;font-size:12px;border-left-width:3px}.scroll{padding:2px 5px;overflow:auto;height:calc(100dvh - 115px);min-height:230px;touch-action:pan-x pan-y}#bench{width:1000px;min-height:615px;transform-origin:top left;position:relative}.benchgrid{grid-template-columns:206px 558px 218px;gap:9px}.left,.right{gap:6px}.device,.meter{border-radius:8px;padding:6px 8px}.device h2,.meter h2{font-size:13px;margin:0 0 4px}.device p{font-size:10px;margin:4px 0}.deviceart{font-size:21px;padding:3px}.deviceart span{font-size:9px}.pins{gap:3px;margin:4px 0}.pins button,.pincol button{border-width:1px;border-radius:4px;padding:4px 3px;font-size:10px;min-width:36px;z-index:9}.pincol{gap:2px}.pincol button{min-height:22px;padding:3px 5px}.board{border-width:5px;border-radius:11px;min-height:595px;padding:5px}.boardmain{grid-template-columns:122px 1fr 130px;gap:5px;margin-top:3px}.banktitle{font-size:10px;padding:2px;margin-top:3px}.board .pincol button{font-size:10px}.boardtop .pins button{font-size:10px}.boardcenter{padding-top:20px}.boardbrand{font-size:24px}.boardlabel{margin-top:9px;font-size:11px}.chip{margin:25px auto 12px;width:105px;height:90px;font-size:16px}.boardbottom{margin-top:55px}.boardfooter{font-size:9px;margin-top:3px}.mount{font-size:18px}.push{width:67px;height:67px;border-width:3px;margin:4px auto;font-size:10px}.face{padding:7px 5px;font-size:11px}.face b{margin-top:3px}.device .action,.device #fireReset,.device #glassReset{padding:5px 7px;font-size:11px;margin:2px}.meter #reading{font-size:24px;padding:5px;border-width:3px}.meter small,.meter p{font-size:10px}.right .deviceart{padding:2px}.below{padding:5px 12px;max-width:none}.below summary{cursor:pointer;font-size:12px;font-weight:700;color:#c4ebd2}.below section{margin:5px 0;padding:8px}.below h3{font-size:13px}.below p{font-size:11px}#wires{z-index:7;pointer-events:none;overflow:visible}#wires path{pointer-events:none}#wires.interactive{pointer-events:auto}#wires.interactive path{pointer-events:stroke;cursor:pointer}button[data-pin].trace-end{outline:3px solid #fff36a!important;box-shadow:0 0 10px #fff36a}#wireList button.trace-selected{background:#ffe06d;color:#14201a}.meter{background:#c5a22c}#probeState{overflow-wrap:anywhere}
+@media(orientation:landscape){header small{display:none}header{padding:3px 10px}nav{padding:3px 6px}nav button{padding:4px 7px;font-size:11px}#hint{margin:2px 7px;padding:3px 7px}.scroll{height:calc(100dvh - 87px)}}
+
+/* Device faces operate their simulated contacts. */
+#glassFace,#fireFace{cursor:pointer;user-select:none;touch-action:manipulation;outline-offset:3px}
+#glassFace:active,#fireFace:active{filter:brightness(1.35)}
+#viewport{touch-action:pan-x pan-y;overscroll-behavior:contain}
+
+/* V2.3 visibility test: wires overlay component artwork, terminals remain tappable. */
+#bench { isolation:isolate; }
+#bench .benchgrid { position:relative; z-index:1; }
+#bench #wires { z-index:30; filter:drop-shadow(0 1px 2px rgba(0,0,0,.95)); }
+#bench button[data-pin] { position:relative; z-index:31; }
+
+/* Text stays readable above the cable overlay, without hiding the PCB itself. */
+#bench .boardbrand, #bench .boardlabel, #bench .banktitle,
+#bench .boardbottom, #bench .boardfooter, #bench .led,
+#bench .topterm label, #bench .device h2, #bench .meter h2,
+#bench .device p, #bench .meter p, #bench .meter small {
+ position:relative; z-index:32;
+}
+#bench .boardbrand, #bench .boardlabel, #bench .boardbottom,
+#bench .boardfooter, #bench .led, #bench .topterm label {
+ background:#e8d02a;
+ box-shadow:0 0 0 3px #e8d02a;
+}
+#bench .device h2, #bench .device p {
+ background:#172b22; box-shadow:0 0 0 3px #172b22;
+}
+#bench .meter h2, #bench .meter p, #bench .meter small {
+ background:#c5a22c; box-shadow:0 0 0 3px #c5a22c;
+}
+#bench .board .banktitle { box-shadow:0 0 0 2px #b6a42a; }
+#bench .chip { position:relative; z-index:32; }
+
+/* Continuous wiring overlay: keep every cable visible end-to-end. */
+#bench #wires { z-index:100 !important; overflow:visible; filter:drop-shadow(0 1px 1px rgba(0,0,0,.9)); }
+#bench button[data-pin] { z-index:101 !important; }
+
+/* V2.5 experiment: dedicated dark cable-routing channels around PCB. */
+#bench{width:1000px;min-height:0}
+#bench .benchgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:10px;row-gap:88px;align-items:stretch;position:relative;z-index:1}
+#bench .left,#bench .right{display:contents}
+#bench .left > section:nth-child(1){grid-column:1 / span 4;grid-row:1}
+#bench .left > section:nth-child(2){grid-column:5 / span 4;grid-row:1}
+#bench .left > section:nth-child(3){grid-column:9 / span 4;grid-row:1}
+#bench .board{grid-column:3 / span 8;grid-row:2;min-height:595px}
+#bench .right > section:nth-child(1){grid-column:1 / span 3;grid-row:3}
+#bench .right > section:nth-child(2){grid-column:4 / span 3;grid-row:3}
+#bench .right > section:nth-child(3){grid-column:7 / span 3;grid-row:3}
+#bench .right > section:nth-child(4){grid-column:10 / span 3;grid-row:3}
+#bench .device,#bench .meter{min-width:0}
+#bench .device .pins{justify-content:center}
+#bench .device .push{width:56px;height:56px}
+#bench .deviceart{font-size:19px}
+#bench .meter #reading{font-size:20px}
+#bench .meter small{font-size:9px}
+#bench #wires{z-index:100!important}
+#bench .routing-channel{position:absolute;z-index:0;pointer-events:none;background:#060b0a;border:1px dashed #355145;border-radius:9px;box-shadow:inset 0 0 0 2px #101d18}
+#bench .routing-channel::after{content:"CABLE ROUTE";position:absolute;color:#567468;font:700 9px system-ui;letter-spacing:2px;left:8px;top:5px;opacity:.8}
+#bench .routing-channel.vertical::after{writing-mode:vertical-rl;left:5px;top:12px}
+
+/* V2.6: external connection terminals face inward towards the ACU.
+   Keep them clear of device artwork and controls. */
+#bench .left > .device, #bench .right > .device { position:relative; }
+#bench .left > .device .pins, #bench .right > .device .pins {
+ position:absolute; left:6px; right:6px; display:flex; flex-wrap:nowrap;
+ justify-content:center; gap:4px; margin:0; z-index:105;
+}
+#bench .left > .device .pins { bottom:-29px; }
+#bench .right > .device .pins { top:-29px; }
+#bench .left > .device .pins button, #bench .right > .device .pins button {
+ min-width:0; flex:0 1 auto; padding:5px 5px; font-size:10px;
+ border:1px solid #94b8a3; background:#244e38;
+ white-space:nowrap; box-shadow:0 1px 3px #0008;
+}
+#bench .left > .device, #bench .right > .device { overflow:visible; }
+/* V2.8: text and connector faces stay unobstructed; cables meet the outer lip. */
+#bench button[data-pin]{position:relative!important;z-index:130!important;isolation:isolate}
+#bench .device h2,#bench .meter h2,#bench .boardbrand,#bench .boardlabel,
+#bench .banktitle,#bench .topterm label,#bench .boardbottom,#bench .boardfooter,
+#bench .led,#bench .device p,#bench .meter p,#bench .meter small,
+#bench .face,#bench .deviceart,#bench #reading,#bench #probeState,
+#bench .chip,#bench .ethernet {position:relative;z-index:110}
+#bench .routing-channel{z-index:0}
+/* V3.0: cable type selector */
+#cableTypes{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:4px 9px;background:#101e18;border-bottom:1px solid #355846}
+#cableTypes .cable-choice{font-size:12px;padding:5px 9px;border-radius:7px;border:2px solid #667b70;color:#fff;background:#263a30}
+#cableTypes .cable-choice.active{outline:2px solid #f4db6a;outline-offset:1px}
+#cableTypes .cable-choice[data-cable="red"]{border-color:#f34b4b}
+#cableTypes .cable-choice[data-cable="black"]{border-color:#b4b4b4}
+#cableTypes .cable-choice[data-cable="blue"]{border-color:#52a9ef}
+#cableTypes .cable-choice[data-cable="yellow"]{border-color:#f3d13d}
+#cableTypes .cable-choice[data-cable="green"]{border-color:#38b86b}
+#cableTypes .cable-choice[data-cable="white"]{border-color:#f5f5f5}
+/* V3.0.1: allow panning fully to bottom devices on Android after zoom. */
+#viewport{overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin;}
+#viewport::after{content:"";display:block;height:42vh;min-height:180px;pointer-events:none;}
+#bench{margin-bottom:30px;}
+/* V3.6: multimeter selector, visible in the right-hand meter */
+#bench .meter .meter-mode{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:5px 0 8px}
+#bench .meter .meter-mode button{padding:6px 7px;font-size:11px;border:1px solid #84968c;border-radius:6px;background:#20342a;color:#f4f9f5;cursor:pointer}
+#bench .meter .meter-mode button.selected{background:#3b8d67;border-color:#a4f0c3;color:white;font-weight:bold}
+#bench .meter #reading{min-height:28px}
+
+/* V3.8: 50% larger connection faces and lettering, without scaling the ACU artwork. */
+#bench button[data-pin]{font-size:15px!important;line-height:1.2!important;min-height:39px!important;padding:9px 8px!important;min-width:0;white-space:nowrap;}
+#bench .pins button span,#bench .pincol button span,#bench .topterm button span{font-size:16.5px!important;}
+#bench .device[data-position^="top"] .pins,#bench .device[data-position^="bottom"] .pins{gap:6px!important;left:0!important;right:0!important;flex-wrap:wrap!important;}
+#bench .device[data-position^="top"] .pins{bottom:-46px!important;}
+#bench .device[data-position^="bottom"] .pins{top:-46px!important;}
+#bench .board .pincol,#bench .board .topterm{gap:5px!important;}
+#bench #rte{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+#bench #rte.rte-held{transform:scale(.95);filter:brightness(.78);box-shadow:inset 0 2px 8px #0009;}
+
+/* V3.9: realistic maglock appearance, original lock+ and lock- terminals unchanged */
+#bench .maglock-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:116px;padding:8px 6px!important;background:linear-gradient(135deg,#23322d,#101a18);overflow:hidden;position:relative}
+#bench .maglock-housing{position:relative;width:min(92%,218px);height:42px;border-radius:5px;background:linear-gradient(180deg,#d5d9d9 0%,#929d9e 20%,#e0e4e1 47%,#798788 75%,#bfc8c6 100%);border:2px solid #657172;box-shadow:0 4px 5px #0008;flex-shrink:0}
+#bench .maglock-brand{position:absolute;left:15%;right:15%;top:4px;font:bold 7px system-ui;letter-spacing:.6px;color:#344145;text-align:center;white-space:nowrap}
+#bench .maglock-face{position:absolute;left:13px;right:13px;bottom:3px;height:12px;background:linear-gradient(180deg,#535f62,#a6b3b1);border:1px solid #606e70;border-radius:2px}
+#bench .maglock-screw{position:absolute;top:12px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#535d5f 0 25%,#e3e6e5 35%,#6e7c7e 80%);z-index:1}
+#bench .left-screw{left:5px}#bench .right-screw{right:5px}
+#bench .maglock-gap{height:9px;flex-shrink:0;transition:height .16s}
+#bench .maglock-armature{width:min(76%,175px);height:20px;position:relative;border-radius:3px;border:1px solid #626f70;background:linear-gradient(180deg,#b9c2c2,#5d696b 50%,#a2adae);box-shadow:0 2px 4px #0008;flex-shrink:0}
+#bench .armature-bolt{position:absolute;left:50%;top:3px;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#60696b 0 30%,#d6d9d9 40%,#626c6d 80%)}
+#bench .armature-text{position:absolute;bottom:2px;right:5px;font:600 6px system-ui;letter-spacing:.3px;color:#243233}
+#bench .maglock-indicator{font:bold 10px system-ui;letter-spacing:1px;color:#f1bf76;line-height:1.3}
+#bench .maglock-art.maglock-energised .maglock-gap{height:1px}
+#bench .maglock-art.maglock-energised .maglock-indicator{color:#82f5ad}
+
+/* V4.7 — white powder-coated steel 12V PSU. Existing terminal buttons unchanged. */
+#bench .metal-psu{position:relative;isolation:isolate;min-height:132px;width:100%;max-width:260px;margin:7px auto 9px;border:3px solid #aab0af;border-radius:7px;background:linear-gradient(120deg,#f9faf7 0%,#e2e5e3 25%,#fcfcf8 54%,#cbd1d0 100%);box-shadow:inset 2px 2px 3px #fff,inset -4px -4px 8px #a7b1af,3px 6px 8px #050d0a;overflow:hidden;color:#33403c}
+#bench .psu-top-edge{position:absolute;top:0;left:0;right:0;height:13px;background:linear-gradient(#bbc4c1,#f8f9f6 65%,#d8ddda);border-bottom:1px solid #b6bfbc}
+#bench .psu-screw{position:absolute;width:13px;height:13px;border:2px solid #8b9693;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff,#aab4b0 72%);box-shadow:0 1px 2px #65716c}
+#bench .psu-screw:after{content:'';position:absolute;top:4px;left:2px;width:6px;border-top:2px solid #58625e;transform:rotate(-40deg)}
+#bench .psu-s1{top:17px;left:10px}#bench .psu-s2{top:17px;right:10px}#bench .psu-s3{bottom:12px;left:10px}#bench .psu-s4{bottom:12px;right:10px}
+#bench .psu-badge{position:absolute;top:24px;left:28px;right:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px;text-shadow:0 1px #fff}
+#bench .psu-badge strong{font-size:23px;letter-spacing:1px;font-weight:900;color:#303e3a}#bench .psu-badge span{font-size:10px;letter-spacing:1.6px;font-weight:900}#bench .psu-badge small{font-size:8px;font-weight:700;color:#62706b}
+#bench .psu-vent{position:absolute;bottom:19px;left:26px;right:26px;display:flex;justify-content:center;gap:7px}
+#bench .psu-vent i{display:block;width:8px;height:18px;border-radius:4px;background:linear-gradient(90deg,#889590,#4d605a 45%,#e3e7e3);box-shadow:inset 1px 1px 2px #4e5b56}
+#bench .psu-lamp{position:absolute;top:22px;right:31px;width:8px;height:8px;border-radius:50%;background:#66e26a;box-shadow:0 0 5px #30d842}
+#bench .psu-lower-lip{position:absolute;bottom:0;left:0;right:0;height:7px;background:linear-gradient(#c8d0cd,#f8faf8)}
+
+/* V4.8 wiring affordances */
+#bench button[data-pin]{touch-action:none;cursor:crosshair}
+#bench button[data-pin].drag-target{outline:4px solid #ffe06a!important;outline-offset:3px;box-shadow:0 0 16px #ffe06a!important}
+#undoWire{border:1px solid #d7b66a!important}
+</style><title>Paxton Training Lab V4.5 Paxton Reader Test</title><style>
+/* V3.2: devices above/below, meter docked to the right */
+#bench{width:1120px!important}
+#bench .benchgrid{grid-template-columns:repeat(12,minmax(0,1fr))!important;column-gap:10px!important;row-gap:96px!important;align-items:stretch}
+#bench .left,#bench .right{display:contents!important}
+#bench .device[data-position="top-1"]{grid-column:1/span 4;grid-row:1}
+#bench .device[data-position="top-2"]{grid-column:5/span 4;grid-row:1}
+#bench .device[data-position="top-3"]{grid-column:9/span 4;grid-row:1}
+#bench .device[data-position="bottom-1"]{grid-column:1/span 4;grid-row:3}
+#bench .device[data-position="bottom-2"]{grid-column:5/span 4;grid-row:3}
+#bench .device[data-position="bottom-3"]{grid-column:9/span 4;grid-row:3}
+#bench .board{grid-column:2/span 9!important;grid-row:2!important;min-height:595px}
+#bench .meter{grid-column:11/span 2!important;grid-row:2!important;align-self:center;min-width:0;padding:9px 5px}
+#bench .meter h2{font-size:12px;text-align:center}
+#bench .meter #reading{font-size:17px;padding:4px 1px}
+#bench .meter #probeState{font-size:9px;overflow-wrap:anywhere}
+#bench .meter small{font-size:9px}
+#bench .device[data-position^="top"] .pins{position:absolute;bottom:-29px;top:auto;left:0;right:0;justify-content:center}
+#bench .device[data-position^="bottom"] .pins{position:absolute;top:-29px;bottom:auto;left:0;right:0;justify-content:center}
+#bench .device[data-position]{overflow:visible}
+#bench .meter-leads{display:block;width:100%;height:auto;max-height:190px;overflow:visible;pointer-events:none}
+#bench .meter-leads .lead-red{stroke:#ed454c}
+#bench .meter-leads .lead-black{stroke:#101010;filter:drop-shadow(0 0 1px white)}
+#bench .meter-leads path{fill:none;stroke-width:3.4;stroke-linecap:round}
+#bench .meter-leads .probe{stroke-width:5.5;stroke-linecap:round}
+</style><style id="v33-layout-fix">
+/* Override legacy nth-child placement, preserving all existing IDs and controls. */
+#bench .benchgrid .device[data-position="top-1"]{grid-column:1 / span 4 !important;grid-row:1 !important}
+#bench .benchgrid .device[data-position="top-2"]{grid-column:5 / span 4 !important;grid-row:1 !important}
+#bench .benchgrid .device[data-position="top-3"]{grid-column:9 / span 4 !important;grid-row:1 !important}
+#bench .benchgrid .device[data-position="bottom-1"]{grid-column:1 / span 4 !important;grid-row:3 !important}
+#bench .benchgrid .device[data-position="bottom-2"]{grid-column:5 / span 4 !important;grid-row:3 !important}
+#bench .benchgrid .device[data-position="bottom-3"]{grid-column:9 / span 4 !important;grid-row:3 !important}
+#bench .benchgrid .board{grid-column:1 / span 10 !important;grid-row:2 !important}
+#bench .benchgrid .meter{grid-column:11 / span 2 !important;grid-row:2 !important}
+</style><style>
+/* V3.4: real-time probe leads drawn above the bench, with tips on selected terminals */
+#bench{position:relative}
+#probe-lead-overlay{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:120!important}
+#probe-lead-overlay path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+#probe-lead-overlay .lead-shadow{stroke:#e5e9e6;stroke-width:6;opacity:.65}
+#probe-lead-overlay .lead-red{stroke:#f0444c;stroke-width:3.2}
+#probe-lead-overlay .lead-black{stroke:#101010;stroke-width:3.2}
+#probe-lead-overlay .probe-body{stroke-width:7;stroke-linecap:round}
+#probe-lead-overlay .probe-tip{stroke:#d7dee1;stroke-width:3;stroke-linecap:round}
+#probe-lead-overlay .probe-contact{fill:#e7f9ed;stroke-width:2.4}
+.meter .meter-leads{display:none!important}
+</style><style id="v35-release-control-style">
+#bench .benchgrid .meter-dock{grid-column:11 / span 2!important;grid-row:2!important;display:flex;flex-direction:column;gap:9px;align-self:stretch;min-width:0;z-index:3}
+#bench .benchgrid .meter-dock .meter{grid-column:auto!important;grid-row:auto!important;width:100%;min-width:0;box-sizing:border-box}
+#bench .release-control{background:#162a25;border:1px solid #4e7465;border-radius:9px;padding:9px 7px;color:#f3f7f3;text-align:center;box-sizing:border-box}
+#bench .release-control h2{font-size:12px;margin:0 0 6px}
+#bench .release-control label{font-size:11px;display:block;margin-bottom:4px}
+#bench #releaseSeconds{width:100%;accent-color:#54d7a4;cursor:pointer}
+#bench .release-number{font-size:19px;font-weight:800;color:#8ef5c4}
+#bench .release-count{font-family:monospace;font-size:21px;font-weight:800;color:#eaffef;background:#071a15;border-radius:5px;padding:4px 0;margin-top:6px}
+#bench .release-bar{height:5px;background:#40574f;border-radius:10px;overflow:hidden;margin-top:6px}
+#bench #releaseFill{height:100%;width:0%;background:#61edab;transition:width .09s linear}
+#bench .release-control small{font-size:9px;display:block;margin-top:5px;line-height:1.25;color:#c5d8ce}
+</style><style id="v37-square-acu-and-meter-legibility">
+/* V3.7: compact, square ACU; preserve actual terminal/button and label sizes. */
+#bench .benchgrid .board {
+  grid-column:2 / span 8 !important;
+  grid-row:2 !important;
+  width:100%;
+  min-height:0 !important;
+  aspect-ratio:1 / 1;
+  box-sizing:border-box;
+  align-self:start;
+}
+#bench .boardmain{grid-template-columns:122px minmax(0,1fr) 130px;gap:5px}
+#bench .boardcenter{padding-top:14px}
+#bench .boardbrand{font-size:24px}
+#bench .chip{margin:15px auto 10px;width:105px;height:90px}
+#bench .boardbottom{margin-top:20px}
+/* High-contrast black continuity result on the light LCD. */
+#bench .meter #reading {color:#050505 !important;text-shadow:none !important;font-weight:900}
+</style><style id="v40-xp95-io-unit">
+/* XP95-style educational illustration; fire relay contacts and click handlers unchanged. */
+#bench .xp95-unit{background:#344239;border-radius:7px;padding:8px 6px;cursor:pointer;user-select:none;touch-action:manipulation;display:flex;justify-content:center;align-items:center;min-height:122px}
+#bench .xp95-cover{position:relative;width:min(100%,210px);min-height:112px;background:linear-gradient(145deg,#f3f1e8 0%,#dddcd1 55%,#c3c5bc 100%);border:3px solid #9a9e97;border-radius:8px;box-shadow:inset 0 2px 2px #fff,3px 4px 6px #0006;padding:10px 17px;color:#2d3434;text-align:center}
+#bench .xp95-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #b2b4ad;padding-bottom:4px}
+#bench .xp95-mark{font-size:15px;font-style:italic;font-weight:900;letter-spacing:-.8px;color:#bb3533}
+#bench .xp95-led{width:10px;height:10px;background:#526658;border:2px solid #9ba49a;border-radius:50%}
+#bench .xp95-title{font-size:20px;font-weight:900;line-height:1.15;letter-spacing:1px;margin-top:5px}
+#bench .xp95-subtitle{font-size:9px;font-weight:800;letter-spacing:.8px}
+#bench .xp95-recess{background:#d1d1c7;border:1px solid #a9aba4;border-radius:3px;margin:6px 5px 0;padding:3px 5px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+#bench .xp95-diagram{font-size:8px;font-weight:700;white-space:nowrap}
+#bench .xp95-status{font-size:9px;font-weight:900;color:#245b3d}
+#bench .xp95-screw{position:absolute;width:9px;height:9px;border-radius:50%;background:linear-gradient(140deg,#d5d8d3,#717b78);border:1px solid #7a807c;top:50%}
+#bench .xp95-screw:after{content:'';position:absolute;top:3px;left:1px;width:5px;border-top:1px solid #454c49;transform:rotate(-30deg)}
+#bench .xp95-screw.screw-a{left:3px}.xp95-screw.screw-b{right:3px}
+#bench .xp95-unit:has(#fireState:not(:empty)){} 
+#bench .xp95-unit:has(#fireState) .xp95-cover:active{filter:brightness(.92)}
+#bench .xp95-unit:has(#fireState) .xp95-led{transition:background .15s}
+#bench .xp95-unit:has(#fireState) .xp95-status{overflow-wrap:anywhere}
+#bench .xp95-unit:has(#fireState) {isolation:isolate}
+</style><style id="v41-cdvi-breakglass">
+/* CDVI-inspired resettable green emergency door release. Existing contacts unchanged. */
+#bench .cdvi-breakglass{display:flex;justify-content:center;align-items:center;padding:7px 3px;background:#20392d;border-radius:8px;cursor:pointer;touch-action:manipulation;user-select:none;min-height:154px}
+#bench .cdvi-case{width:min(100%,170px);border:4px solid #0c7139;border-radius:9px;background:linear-gradient(115deg,#29a957,#08783a 60%,#05602f);box-shadow:inset 0 0 0 2px #50c67c,2px 5px 8px #0007;padding:7px;color:#fff;text-align:center}
+#bench .cdvi-top{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:1px 2px 7px}
+#bench .cdvi-logo{font-size:17px;font-weight:1000;letter-spacing:-1px;font-style:italic;color:white}
+#bench .cdvi-model{font-size:7px;font-weight:900;line-height:1.15;text-align:right;max-width:75px}
+#bench .cdvi-window{border:3px solid #c5d6c7;background:linear-gradient(145deg,#f8faf7,#d4e0d5);box-shadow:inset 0 2px 6px #536d5a9c;min-height:84px;border-radius:3px;color:#174e2c;display:flex;flex-direction:column;justify-content:center;align-items:center}
+#bench .cdvi-arrow{font-size:12px;line-height:13px;color:#148449}
+#bench .cdvi-push{font-size:14px;font-weight:1000;line-height:1.05;letter-spacing:.3px;padding:3px}
+#bench .cdvi-foot{display:flex;justify-content:space-between;align-items:center;padding:6px 2px 0;gap:3px}
+#bench .cdvi-foot strong{font-size:10px;letter-spacing:.6px;color:#f4fff5}
+#bench .cdvi-screw{width:9px;height:9px;border-radius:50%;border:1px solid #8da49b;background:linear-gradient(130deg,#fff,#87988f);position:relative}
+#bench .cdvi-screw:after{content:'';position:absolute;left:1px;top:3px;width:5px;border-top:1px solid #425a4c;transform:rotate(-35deg)}
+#bench .cdvi-breakglass:active .cdvi-window{transform:translateY(3px);background:#b8cfba}
+#bench .cdvi-breakglass:has(#glassState) .cdvi-case{transition:filter .15s}
+
+/* V4.2: CDVI-style stainless-steel RTE plate; original COM/NO/NC terminals untouched */
+#bench .cdvi-rte{display:block;width:min(100%,205px);margin:8px auto 12px;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:4px;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}
+#bench .cdvi-rte-shell{display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:150px;padding:8px 12px;background:linear-gradient(110deg,#8b969b,#e9eceb 23%,#a9b1b5 51%,#f2f3f1 79%,#8d989b);border:2px solid #7d888b;border-radius:5px;box-shadow:2px 5px 9px #0008,inset 0 0 1px #fff;position:relative}
+#bench .cdvi-rte-logo{font:900 15px system-ui;letter-spacing:2px;color:#253d53;text-shadow:0 1px #fff8}
+#bench .cdvi-rte-ring{width:88px;height:88px;border-radius:50%;padding:7px;background:linear-gradient(145deg,#fafafa,#68787f 48%,#dfe5e6);border:2px solid #56646c;box-shadow:inset 0 2px 6px #3338,0 2px 4px #0005;display:grid;place-items:center}
+#bench .cdvi-rte-centre{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 20%,#fafdfc,#a8b5b7 65%,#7e8f95);border:2px solid #74868b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:#263e46}
+#bench .cdvi-rte-symbol{font-size:28px;font-weight:900;line-height:1}
+#bench .cdvi-rte-press{font-size:8px;font-weight:1000;letter-spacing:.2px;white-space:nowrap}
+#bench .cdvi-rte-screw{width:10px;height:10px;border-radius:50%;background:linear-gradient(140deg,#f8f9f8,#67777c);border:1px solid #5c6b70;position:relative}
+#bench .cdvi-rte-screw:after{content:'';position:absolute;top:4px;left:1px;width:6px;border-top:1px solid #35484f;transform:rotate(-35deg)}
+#bench .cdvi-rte.rte-held{transform:none!important;filter:none!important;box-shadow:none!important}
+#bench .cdvi-rte.rte-held .cdvi-rte-centre{transform:translateY(3px);background:radial-gradient(circle at 30% 20%,#b2c1c2,#77898c);box-shadow:inset 0 4px 7px #0007}
+#bench .cdvi-rte.rte-held .cdvi-rte-ring{box-shadow:inset 0 4px 10px #0009}
+</style><style id="v43-rte-photo-style">
+/* V4.3: brushed stainless plate, green domed centre and two side screws */
+#bench .cdvi-rte{width:min(100%,205px);margin:8px auto 12px;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;touch-action:none;user-select:none;display:block}
+#bench .rte-photo-plate{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-around;width:100%;aspect-ratio:1/1;padding:10px 12px 13px;border-radius:17px;border:2px solid #c1c3ca;background:repeating-linear-gradient(91deg,#fff2 0px,#9298a008 1px,#fff3 2px,#87919b12 3px),linear-gradient(110deg,#d7d8df 0%,#f3f1f4 20%,#b9bec6 49%,#f4f2f4 76%,#c9cbd3 100%);box-shadow:inset 0 2px 4px #fff9,inset 0 -2px 3px #7775,1px 4px 8px #0006}
+#bench .rte-photo-press,#bench .rte-photo-exit{font-family:Arial,system-ui,sans-serif;font-size:27px;font-weight:900;line-height:1;letter-spacing:1px;color:#16745f;text-shadow:0 1px #fff6;white-space:nowrap}
+#bench .rte-photo-middle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:4px}
+#bench .rte-photo-green{width:92px;height:92px;max-width:64%;aspect-ratio:1;border-radius:50%;border:2px solid #438b80;background:radial-gradient(ellipse at 36% 21%,#ffffffc2 0%,#9bd1c5 8%,#4aa898 23%,#147e72 58%,#0b645b 79%,#094c48 100%);box-shadow:inset -8px -10px 15px #064c4980,inset 5px 5px 11px #ffffff65,0 5px 6px #0006;position:relative;flex-shrink:0;transition:transform .08s,box-shadow .08s}
+#bench .rte-photo-green:before{content:'';position:absolute;top:10%;left:30%;width:16%;height:28%;border-radius:50%;background:#ffffffa6;transform:rotate(17deg);filter:blur(2px)}
+#bench .rte-photo-green:after{content:'';position:absolute;top:13%;right:23%;width:9%;height:21%;border-radius:50%;background:#ffffff8a;transform:rotate(-20deg);filter:blur(2px)}
+#bench .rte-photo-screw{width:15px;height:15px;flex:0 0 15px;border-radius:50%;border:1px solid #777d86;background:radial-gradient(circle at 30% 25%,#f8f8f9,#a6aab1 60%,#777c83);box-shadow:0 1px 2px #5558;position:relative}
+#bench .rte-photo-screw:after{content:'+';position:absolute;inset:-3px 0 0;text-align:center;font:bold 15px Arial;color:#5d626b;text-shadow:0 1px #fff9}
+#bench .cdvi-rte.rte-held .rte-photo-green,#bench .cdvi-rte:active .rte-photo-green{transform:translateY(4px) scale(.96);box-shadow:inset 5px 6px 13px #003d3d9c,0 1px 2px #0005}
+</style><style id="v44-rte-square-fix">
+/* Override the original round RTE's fixed 56px height: it was slicing the faceplate. */
+#bench button#rte.cdvi-rte{display:block!important;box-sizing:border-box!important;width:205px!important;height:205px!important;min-height:205px!important;max-height:none!important;aspect-ratio:1/1!important;margin:8px auto 12px!important;padding:0!important;border:0!important;border-radius:15px!important;background:transparent!important;overflow:visible!important;line-height:normal!important;}
+#bench button#rte.cdvi-rte .rte-photo-plate{display:flex!important;box-sizing:border-box!important;width:205px!important;height:205px!important;min-height:205px!important;aspect-ratio:1/1!important;flex-direction:column!important;align-items:center!important;justify-content:space-between!important;padding:18px 12px 17px!important;overflow:hidden!important;}
+#bench button#rte.cdvi-rte .rte-photo-middle{display:flex!important;flex:1 1 auto!important;align-items:center!important;justify-content:space-between!important;min-height:0!important;}
+#bench button#rte.cdvi-rte .rte-photo-press,#bench button#rte.cdvi-rte .rte-photo-exit{display:block!important;flex:0 0 auto!important;font-size:26px!important;line-height:1.05!important;}
+#bench button#rte.cdvi-rte .rte-photo-green{width:90px!important;height:90px!important;max-width:none!important;flex:0 0 90px!important;}
+</style><style id="v45-paxton-reader">
+/* Paxton reader: narrow, dark charcoal, slightly curved top and rounded base,
+   three low-mounted indicator windows as in the supplied reference photo. */
+#bench .paxton-reader-stage{height:235px;display:flex;justify-content:center;align-items:center;padding:5px 0 7px;position:relative;z-index:110}
+#bench .paxton-reader{width:116px;height:218px;position:relative;filter:drop-shadow(5px 7px 4px #0008);transform:perspective(450px) rotateY(-5deg)}
+#bench .paxton-reader-front{position:absolute;inset:0 9px 12px 0;background:linear-gradient(94deg,#263c3d 0%,#3b5151 12%,#344747 40%,#2b4142 74%,#1b3031 94%,#41595a 100%);border:2px solid #1c3030;border-radius:36px 12px 18px 21px / 19px 12px 17px 22px;clip-path:polygon(0 9%,4% 6%,20% 3%,49% 1%,94% 0,100% 2%,100% 96%,92% 100%,10% 100%,0 95%);box-shadow:inset 6px 1px 9px #ffffff16,inset -7px 0 9px #0007}
+#bench .paxton-reader:before{content:'';position:absolute;right:0;top:5px;bottom:19px;width:16px;background:linear-gradient(90deg,#243637,#132829 75%,#344748);border-radius:2px 10px 12px 0;transform:skewY(-2deg)}
+#bench .paxton-reader-lights{position:absolute;bottom:34px;left:16px;right:15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#bench .reader-light{display:block;width:17px;height:12px;border-radius:50%;border:2px solid #1a3030;box-shadow:0 0 0 2px #243737,inset 0 1px 2px #fff7;transform:rotate(-8deg);opacity:.38;transition:opacity .1s,box-shadow .1s}
+#bench .reader-light.green{background:#5dfa17}#bench .reader-light.amber{background:#ffe020}#bench .reader-light.red{background:#fa2b67}
+#bench .paxton-reader.reader-ready .reader-light.red{opacity:1;box-shadow:0 0 8px #ff306a,0 0 0 2px #243737}
+#bench .paxton-reader.reader-ready .reader-light.amber{opacity:.85;box-shadow:0 0 7px #ffd82b,0 0 0 2px #243737}
+#bench .paxton-reader.reader-granted .reader-light.green{opacity:1;box-shadow:0 0 11px #68ff26,0 0 0 2px #243737}
+#bench .paxton-reader.reader-granted .reader-light.red{opacity:.2}
+#bench .paxton-reader-foot{position:absolute;bottom:0;left:12px;right:14px;height:17px;background:linear-gradient(#1b3031,#0e2224);border-radius:0 0 42% 42%;clip-path:polygon(0 0,100% 0,88% 100%,18% 100%)}
+#bench .paxton-reader-screw{position:absolute;left:47%;top:7px;width:11px;height:6px;border-radius:50%;background:radial-gradient(ellipse,#8da7a8,#385759 75%,#142b2e)}
+/* Five distinct green LED flashes following a successful card presentation. */
+#bench .paxton-reader.reader-granted .reader-light.green{opacity:.2;box-shadow:0 0 0 2px #243737}
+#bench .paxton-reader.reader-green-flash .reader-light.green{opacity:1;box-shadow:0 0 14px 4px #68ff26,0 0 0 2px #243737}
+</style><style id="v410-light-grey-background">
+/* V4.10: background-only change; device, wiring and interaction styles preserved. */
+html,body{background:#d8dcde!important}
+#bench{background:#d8dcde!important}
+#bench .routing-channel{background:#bcc4c8!important;border-color:#8d999e!important;box-shadow:inset 0 0 0 2px #cbd1d4!important}
+#bench .routing-channel::after{color:#526269!important}
+</style></head><body>
+<header><div><b>⚡ Paxton Training Lab <em>V4.7 White Metal PSU</em></b><small>Net2 Plus • Door 1 training bench</small></div><span id="status">Ready</span></header>
+<nav><button id="example">Load example</button><button id="clear">Clear wiring</button><button id="undoWire" title="Undo last wiring change">↶ Undo</button><button id="reset">Reset devices</button><button class="selected" data-mode="wire">＋ Wire</button><button data-mode="remove">✂ Remove</button><button data-mode="trace">🔎 Trace</button><button data-mode="red">🔴 Red probe</button><button data-mode="black">⚫ Black probe</button><button id="fit" title="Fit all components on screen">⛶ Fit</button></nav><div aria-label="Choose colour for next cable" id="cableTypes"><span style="font-size:12px">New cable:</span><button class="cable-choice active" data-cable="red">🔴 Red</button><button class="cable-choice" data-cable="black">⚫ Black</button><button class="cable-choice" data-cable="blue">🔵 Blue</button><button class="cable-choice" data-cable="yellow">🟡 Yellow</button><button class="cable-choice" data-cable="green">🟢 Green</button><button class="cable-choice" data-cable="white">⚪ White</button></div>
+<div id="hint" role="status">Connections land on the outside edge of each terminal. Cable routes stay in the dark channels; terminal labels remain visible.</div>
+<div class="scroll" id="viewport"><div id="bench"><svg aria-label="Wiring connections" id="wires"></svg><div class="routing-channel" id="channelTop"></div><div class="routing-channel" id="channelBottom"></div><div class="routing-channel vertical" id="channelLeft"></div><div class="routing-channel vertical" id="channelRight"></div><div class="benchgrid">
+<div class="left">
+<section class="device"><h2>Reader 1</h2><div class="paxton-reader-stage"><div class="paxton-reader" id="paxtonReader" aria-label="Paxton proximity reader with green amber and red indicators"><div class="paxton-reader-front"><div class="paxton-reader-lights"><i class="reader-light green" aria-label="Green LED"></i><i class="reader-light amber" aria-label="Amber LED"></i><i class="reader-light red" aria-label="Red LED"></i></div></div><div class="paxton-reader-foot"><span class="paxton-reader-screw"></span></div></div></div><div class="pins"><button data-pin="reader+">+12V</button><button data-pin="reader-">0V</button><button data-pin="readerD0">Data 0</button><button data-pin="readerD1">Data 1</button></div><button class="action" id="card">Present valid card</button><p id="readerState">Reader unpowered</p></section>
+<section class="device"><h2>Request to exit</h2><button class="push cdvi-rte" id="rte" aria-label="Hold green request to exit button">
+<span class="rte-photo-plate"><span class="rte-photo-press">PRESS</span><span class="rte-photo-middle"><span class="rte-photo-screw" aria-hidden="true"></span><span class="rte-photo-green" aria-hidden="true"></span><span class="rte-photo-screw" aria-hidden="true"></span></span><span class="rte-photo-exit">TO EXIT</span></span>
+</button><div class="pins"><button data-pin="rteC">COM</button><button data-pin="rteN">NO</button><button data-pin="rteX">NC</button></div><p id="rteState">COM ↔ NC</p></section>
+<section class="device"><h2>Fire relay</h2><div aria-label="Activate XP95 I/O fire relay" class="xp95-unit" id="fireFace" role="button" tabindex="0" title="Tap to activate or reset the fire relay">
+  <div class="xp95-cover">
+    <div class="xp95-head"><span class="xp95-mark">apollo</span><span class="xp95-led" aria-hidden="true"></span></div>
+    <div class="xp95-title">XP95</div>
+    <div class="xp95-subtitle">INPUT / OUTPUT UNIT</div>
+    <div class="xp95-recess"><span class="xp95-diagram">IN&nbsp; ◯&nbsp; ◯&nbsp; OUT</span><span class="xp95-status" id="fireState">NORMAL</span></div>
+    <span class="xp95-screw screw-a" aria-hidden="true"></span><span class="xp95-screw screw-b" aria-hidden="true"></span>
+  </div>
+</div><div class="pins"><button data-pin="fireC">COM</button><button data-pin="fireN">NC</button><button data-pin="fireO">NO</button></div><button class="action" id="fire">Activate fire</button><button id="fireReset">Reset</button></section>
+</div>
+<section aria-label="Net2 Plus board" class="board"><div class="boardtop"><span class="mount">◉</span><div class="topterm"><label>Intruder alarm</label><div class="pins"><button data-pin="alarmN">N.O.</button><button data-pin="alarmC">COM</button><button data-pin="alarmT">Tamper</button></div></div><span class="mount">◉</span></div>
+<div class="boardmain"><div class="readerbank"><div class="banktitle">Reader 1</div><div class="pincol"><button data-pin="acuR+">12V</button><button data-pin="acuR-">0V</button><button data-pin="acuD0">Data/D0</button><button data-pin="acuD1">Clock/D1</button><button data-pin="acuRL">Red LED</button><button data-pin="acuGL">Green LED</button></div><div class="banktitle">Reader 2</div><div class="pincol"><button data-pin="r2+">12V</button><button data-pin="r2-">0V</button><button data-pin="r2D0">Data/D0</button><button data-pin="r2D1">Clock/D1</button></div></div>
+<div class="boardcenter"><div class="boardbrand">Net2 <strong>plus</strong></div><div class="boardlabel">Paxton access control unit<br/>Door 1 training model</div><div class="chip">NET2<br/><small>CONTROLLER</small></div><div class="led"><span id="led"></span> OK</div><div class="boardbottom">Server Connected <span class="light"></span><br/>10/100 Ethernet <span class="ethernet">▥</span></div></div>
+<div class="rightbank"><div class="banktitle">Power</div><div class="pincol"><button data-pin="acuP+">12V</button><button data-pin="acuP-">0V</button></div><div class="banktitle">Output 1 · Lock relay</div><div class="pincol"><button data-pin="relayNC">N.C.</button><button data-pin="relayNO">N.O.</button><button data-pin="relayC">COM</button></div><div class="banktitle">Output 2</div><div class="pincol"><button data-pin="relay2NC">N.C.</button><button data-pin="relay2NO">N.O.</button><button data-pin="relay2C">COM</button></div><div class="banktitle">Inputs</div><div class="pincol"><button data-pin="exit">Exit</button><button data-pin="exitG">0V</button><button data-pin="contact">Contact</button><button data-pin="contactG">0V</button></div></div></div><div class="boardfooter">Paxton Net2 plus · Training representation, not manufacturer artwork</div></section>
+<div class="right">
+<section class="device"><h2>Maglock</h2><div class="deviceart maglock-art" id="lockArt" role="img" aria-label="Maglock released">
+  <div class="maglock-housing"><span class="maglock-brand">ELECTROMAGNETIC LOCK</span><span class="maglock-screw left-screw"></span><span class="maglock-screw right-screw"></span><span class="maglock-face"></span></div>
+  <div class="maglock-gap"></div>
+  <div class="maglock-armature"><span class="armature-bolt"></span><span class="armature-text">ARMATURE PLATE</span></div>
+  <div class="maglock-indicator" aria-hidden="true">RELEASED</div>
+</div><div class="pins"><button data-pin="lock+">+</button><button data-pin="lock-">−</button></div><p id="lockState">Released · 0.0 V</p></section>
+<section class="device"><h2>Green break glass</h2><div aria-label="Press CDVI-style green emergency door release" class="cdvi-breakglass" id="glassFace" role="button" tabindex="0" title="Tap to operate emergency release">
+<div class="cdvi-case"><div class="cdvi-top"><span class="cdvi-logo">CDVI</span><span class="cdvi-model">EMERGENCY DOOR RELEASE</span></div>
+<div class="cdvi-window"><div class="cdvi-arrow">▼</div><div class="cdvi-push">PRESS HERE<br>TO RELEASE</div><div class="cdvi-arrow bottom">▲</div></div>
+<div class="cdvi-foot"><span class="cdvi-screw"></span><strong id="glassState">NORMAL</strong><span class="cdvi-screw"></span></div></div></div><div class="pins"><button data-pin="glassC">COM</button><button data-pin="glassN">NC</button><button data-pin="glassO">NO</button></div><button class="action" id="glass">Press to release</button><button id="glassReset">Reset</button></section>
+<section class="device psu-device"><h2>12V DC power supply</h2><div class="metal-psu" role="img" aria-label="White metal 12 volt DC power supply enclosure with ventilation slots and mounting screws"><div class="psu-top-edge"></div><div class="psu-screw psu-s1"></div><div class="psu-screw psu-s2"></div><div class="psu-screw psu-s3"></div><div class="psu-screw psu-s4"></div><div class="psu-badge"><strong>12V DC</strong><span>POWER SUPPLY</span><small>REGULATED OUTPUT</small></div><div class="psu-vent"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="psu-lamp" title="Power indicator"></div><div class="psu-lower-lip"></div></div><div class="pins"><button data-pin="psu+">+12V</button><button data-pin="psu-">0V</button></div><p>Simulated regulated DC output. Cable colour does not affect conductivity.</p></section>
+<section class="meter"><h2>MULTIMETER</h2><div class="meter-mode"><button type="button" id="meterDC" class="selected" aria-pressed="true">V DC</button><button type="button" id="meterContinuity" aria-pressed="false">◖)) Continuity</button></div><div id="reading">—.— V</div><p id="probeState">RED — | BLACK —</p><small id="meterHelp">Select a probe, then tap a terminal. For voltage: red PSU +12V, black PSU 0V.</small></section>
+</div></div></div></div>
+<details class="below" id="diagnostics"><summary>Diagnostics · Fault injection · Cable list</summary><section><h3>Door 1 diagnostics</h3><div class="stats"><span id="acuState">ACU unpowered</span><span id="relayState">Relay COM ↔ NC</span><span id="timer">Card timer 0.0s</span></div><p id="message">Load the example circuit to begin.</p></section><section><h3>Fault injection</h3><select id="fault"><option value="none">No fault</option><option value="psu">PSU failed</option><option value="reader">Reader supply failed</option><option value="relay">Relay stuck at NC</option><option value="glass">Break glass NC open</option><option value="fire">Fire NC open</option><option value="cable">Maglock positive cable broken</option></select></section><section><h3>Installed wires <span id="count">0</span></h3><div id="wireList"></div></section><p class="warning">Educational simulation only. Not a Paxton-approved wiring diagram or fire/egress safety design. Never use this example as an installation specification.</p></details>
+<script>
+/* Rearrange the existing interactive devices before the simulator starts. */
+(()=>{
+ const bench=document.querySelector('#bench .benchgrid');
+ const left=bench.querySelector('.left'),right=bench.querySelector('.right');
+ const find=id=>document.getElementById(id).closest('section');
+ const positions=[['glass','top-1'],['fire','top-2'],['lockArt','top-3'],['rte','bottom-1'],['card','bottom-2'],['psu+','bottom-3']];
+ for(const [id,position] of positions){
+   const el=id==='psu+'?document.querySelector('[data-pin="psu+"]').closest('section'):find(id);
+   el.dataset.position=position;
+ }
+ const meter=bench.querySelector('.meter');
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+ svg.setAttribute('class','meter-leads');svg.setAttribute('viewBox','0 0 160 185');
+ svg.setAttribute('role','img');svg.setAttribute('aria-label','Red and black multimeter leads with pointed probes');
+ svg.innerHTML=`<rect x="37" y="2" width="20" height="18" rx="6" fill="#ed454c"/><rect x="104" y="2" width="20" height="18" rx="6" fill="#161616" stroke="#aaa"/>
+ <path class="lead-red" d="M47 20 C5 55 12 104 43 119 S56 150 34 161"/>
+ <path class="lead-black" d="M114 20 C157 57 143 110 116 124 S110 150 130 162"/>
+ <path class="probe" stroke="#d53d42" d="M34 158 L27 175"/><path stroke="#ccc" stroke-width="2.5" d="M27 175 L23 183"/>
+ <path class="probe" stroke="#111" d="M130 158 L137 175"/><path stroke="#ccc" stroke-width="2.5" d="M137 175 L141 183"/>`;
+ meter.insertBefore(svg,meter.querySelector('#probeState'));
+ // Position meter directly in grid, leaving its existing controls intact.
+ const dock=document.createElement('div');dock.className='meter-dock';
+ const control=document.createElement('section');control.className='release-control';
+ control.innerHTML=`<h2>DOOR 1 RELAY TIMER</h2><label for="releaseSeconds">Release duration <span class="release-number" id="releaseSetting">4s</span></label><input id="releaseSeconds" type="range" min="1" max="30" step="1" value="4" aria-label="Relay release duration in seconds"><div class="release-count" id="releaseCountdown">0.0s</div><div class="release-bar"><div id="releaseFill"></div></div><small>Reader and Request to Exit use the same duration.</small>`;
+ dock.append(control,meter);bench.append(dock);
+})();
+</script><script>(()=>{'use strict';
+const $=id=>document.getElementById(id), buttons=[...document.querySelectorAll('[data-pin]')], byPin=Object.fromEntries(buttons.map(b=>[b.dataset.pin,b]));
+const example=[['psu+','acuP+'],['psu-','acuP-'],['reader+','acuR+'],['reader-','acuR-'],['readerD0','acuD0'],['readerD1','acuD1'],['rteC','exitG'],['rteN','exit'],['psu+','relayNC'],['relayC','glassN'],['glassC','fireN'],['fireC','lock+'],['lock-','psu-']];
+let readerFlashStart=0;const readerFlashHalfPeriod=180,readerFlashCount=5;
+let meterMode='dc';let releaseDurationMs=4000;let cableChoice='red',cableKinds={},selectedWire=null,fitScale=1,wires=[],mode='wire',first=null,red=null,black=null,fire=false,glass=false,rte=false,cardUntil=0,relay=false,version=0;
+const valid=new Set(Object.keys(byPin));
+const wireKey=(a,b)=>[a,b].sort().join('~');
+function cableColour(a,b){const kind=cableKinds[wireKey(a,b)]||'auto';return ({red:'#f34b4b',black:'#111111',blue:'#52a9ef',yellow:'#f3d13d',green:'#39c66c',white:'#f6f6f6',power:'#f34b4b',zero:'#111111',data:'#52a9ef',rte:'#f3d13d'})[kind]||(a.includes('+')||b.includes('+')?'#f34b4b':a.includes('-')||b.includes('-')?'#111111':'#52a9ef')}
+function blackCable(a,b){return cableColour(a,b)==='#111111'}
+function inferKind(a,b){if(a.includes('+')||b.includes('+'))return 'power';if(a.includes('-')||b.includes('-'))return 'zero';if(a.toLowerCase().includes('rte')||b.toLowerCase().includes('exit'))return 'rte';if(a.toLowerCase().includes('reader')||b.toLowerCase().includes('d0')||b.toLowerCase().includes('d1'))return 'data';return 'auto'}
+function join(g,a,b){g[a].add(b);g[b].add(a)}
+function reachable(g,start){const seen=new Set([start]),todo=[start];while(todo.length){const a=todo.pop();for(const b of g[a]||[]){if(!seen.has(b)){seen.add(b);todo.push(b)}}}return seen}
+function graph(relayState){const g=Object.fromEntries([...valid].map(p=>[p,new Set()]));for(const [a,b] of wires)join(g,a,b);
+const fault=$('fault').value;
+if(!glass&&fault!=='glass')join(g,'glassC','glassN');else if(glass)join(g,'glassC','glassO');
+if(!fire&&fault!=='fire')join(g,'fireC','fireN');else if(fire)join(g,'fireC','fireO');
+join(g,'rteC',rte?'rteN':'rteX');join(g,'relayC',relayState?'relayNO':'relayNC');
+const p=reachable(g,'psu+'),n=reachable(g,'psu-');const supply=fault!=='psu';const acu=supply&&p.has('acuP+')&&n.has('acuP-')&&!p.has('psu-');
+if(acu){join(g,'acuP+','acuR+');join(g,'acuP-','acuR-');join(g,'acuP-','exitG');join(g,'acuP-','contactG');join(g,'acuP+','r2+');join(g,'acuP-','r2-')}
+return {g,acu,supply};}
+function state(){let s=graph(relay);const fault=$('fault').value;
+const plus=reachable(s.g,'psu+'),minus=reachable(s.g,'psu-');
+const reader=s.acu&&fault!=='reader'&&plus.has('reader+')&&minus.has('reader-')&&reachable(s.g,'readerD0').has('acuD0')&&reachable(s.g,'readerD1').has('acuD1');
+const exit=s.acu&&rte&&reachable(s.g,'exit').has('exitG');
+const active=Date.now()<cardUntil;
+const nextRelay=s.acu&&fault!=='relay'&&(active||exit);
+if(nextRelay!==relay){relay=nextRelay;s=graph(relay)}
+const p=reachable(s.g,'psu+'),n=reachable(s.g,'psu-');const short=p.has('psu-');
+function voltage(pin){if(!pin||!s.supply||short)return null;const positive=p.has(pin),negative=n.has(pin);if(positive&&negative)return null;if(positive)return 12;if(negative)return 0;return null}
+// Electrical connectivity is determined only by endpoints and contact state,
+// never by the selected cable colour. PSU +12V is the sole voltage source;
+// PSU 0V is the sole ground reference. ACU reader outputs become live only
+// when the ACU is correctly powered.
+for(const terminal of buttons){const v=voltage(terminal.dataset.pin);terminal.dataset.potential=v===12?'12v':v===0?'0v':'floating';terminal.title=v===null?'No defined voltage':v.toFixed(1)+' V relative to PSU 0V';}
+const lockP=voltage('lock+'),lockN=voltage('lock-');const lock=lockP!==null&&lockN!==null&&lockP-lockN>=10&&fault!=='cable';
+$('acuState').textContent=s.acu?'ACU powered':'ACU unpowered';$('readerState').textContent=reader?'Reader online':'Reader offline';const readerCase=$('paxtonReader');if(readerCase){readerCase.classList.toggle('reader-ready',reader&&!active);readerCase.classList.toggle('reader-granted',reader&&active);const elapsed=Date.now()-readerFlashStart;const flashing=reader&&readerFlashStart>0&&elapsed>=0&&elapsed<readerFlashCount*readerFlashHalfPeriod*2;readerCase.classList.toggle('reader-green-flash',flashing&&Math.floor(elapsed/readerFlashHalfPeriod)%2===0);}$('led').classList.toggle('on',s.acu);$('relayState').textContent='Relay COM ↔ '+(relay?'NO':'NC');$('rteState').textContent=rte?'COM ↔ NO':'COM ↔ NC';$('fireState').textContent=fire?'ACTIVE':'NORMAL';$('glassState').textContent=glass?'ACTIVE':'NORMAL';$('lockArt').classList.toggle('maglock-energised',lock);$('lockArt').setAttribute('aria-label',lock?'Maglock energised':'Maglock released');const lockIndicator=$('lockArt').querySelector('.maglock-indicator');if(lockIndicator)lockIndicator.textContent=lock?'ENERGISED':'RELEASED';$('lockState').textContent=lock?'Energised · 12.0 V':'Released · 0.0 V';const remaining=Math.max(0,cardUntil-Date.now());$('timer').textContent='Release timer '+(remaining/1000).toFixed(1)+'s';$('releaseCountdown').textContent=(remaining/1000).toFixed(1)+'s';$('releaseFill').style.width=(releaseDurationMs?Math.min(100,remaining/releaseDurationMs*100):0)+'%';
+const r=voltage(red),b=voltage(black);
+if(meterMode==='continuity'){
+  // Check for a conductive path in the CURRENT contact-state graph.
+  // Do not infer continuity from cable colour or terminal labels.
+  const connected=Boolean(red&&black&&reachable(s.g,red).has(black));
+  $('reading').textContent=!red||!black?'— —':connected?'●  BEEP':'OL  OPEN';
+  $('reading').style.color='#050505';
+  $('meterHelp').textContent='Simulated continuity only. Real meters: isolate power before testing resistance/continuity.';
+}else{
+  $('reading').textContent=r===null||b===null?'—.— V':(r-b).toFixed(1)+' V';
+  $('reading').style.color='';
+  $('meterHelp').textContent='Select a probe, then tap a terminal. Red PSU +12V and black PSU 0V = 12.0 V.';
+}
+$('probeState').textContent='RED '+(red||'—')+' | BLACK '+(black||'—');drawProbeLeads();$('status').textContent=navigator.onLine?'Ready':'Offline';
+if(short)$('message').textContent='SHORT CIRCUIT — simulated supply disabled';else if(!s.acu)$('message').textContent='Check PSU and ACU power terminals';else if(!reader)$('message').textContent='ACU powered — check reader power and data wiring';else $('message').textContent=active?'Valid card — relay operated':'Reader ready — present card or press RTE';
+return {reader,acu:s.acu};}
+function save(){try{localStorage.setItem('paxton-v21-wires',JSON.stringify(wires));localStorage.setItem('paxton-v29-cable-kinds',JSON.stringify(cableKinds))}catch{}}
+function render(){if(selectedWire&&!wires.some(w=>wireKey(...w)===selectedWire))selectedWire=null;save();$('count').textContent=wires.length+' wires';const list=$('wireList');list.replaceChildren();for(const [a,b] of wires){const btn=document.createElement('button');btn.textContent=a+' ↔ '+b;btn.classList.toggle('trace-selected',selectedWire===wireKey(a,b));btn.addEventListener('click',()=>{if(mode==='remove')remove(a,b);else{selectedWire=selectedWire===wireKey(a,b)?null:wireKey(a,b);render()}});list.append(btn)}draw();state();drawProbeLeads()}
+const wireHistory=[];function rememberWiring(){wireHistory.push({wires:wires.map(w=>[...w]),kinds:{...cableKinds}});if(wireHistory.length>40)wireHistory.shift()}
+function add(a,b){if(a!==b&&valid.has(a)&&valid.has(b)&&!wires.some(w=>wireKey(...w)===wireKey(a,b))){rememberWiring();wires.push([a,b]);cableKinds[wireKey(a,b)]=cableChoice==='auto'?inferKind(a,b):cableChoice;render()}}
+function remove(a,b){if(!wires.some(w=>wireKey(...w)===wireKey(a,b)))return;rememberWiring();delete cableKinds[wireKey(a,b)];wires=wires.filter(w=>wireKey(...w)!==wireKey(a,b));render()}
+function draw(){
+ const svg=$('wires'),bench=$('bench'),rect=bench.getBoundingClientRect(),scale=fitScale;
+ svg.setAttribute('viewBox',`0 0 ${bench.offsetWidth} ${bench.offsetHeight}`);
+ svg.replaceChildren();svg.classList.toggle('interactive',mode==='trace'||mode==='remove');
+ // Continuous cable paths: no SVG masking, which previously made wires vanish
+ // behind text, terminals, and component artwork.
+ const ns='http://www.w3.org/2000/svg';
+ buttons.forEach(b=>b.classList.remove('trace-end'));
+ // Return the terminal's outer edge, not its centre. All coordinates are in bench space.
+ function bounds(pin){const r=byPin[pin].getBoundingClientRect();return {x:(r.left-rect.left)/scale,y:(r.top-rect.top)/scale,w:r.width/scale,h:r.height/scale,cx:(r.left+r.width/2-rect.left)/scale,cy:(r.top+r.height/2-rect.top)/scale}}
+ function edge(box,other,horizontal){
+  if(horizontal)return {x:other.cx>=box.cx?box.x+box.w:box.x,y:box.cy};
+  return {x:box.cx,y:other.cy>=box.cy?box.y+box.h:box.y};
+ }
+ // Dedicated external cable channels, avoiding all device boxes and the PCB centre.
+ const board=document.querySelector('.board');
+ const br=board.getBoundingClientRect();
+ const bx=(br.left-rect.left)/scale, by=(br.top-rect.top)/scale;
+ const bw=br.width/scale, bh=br.height/scale;
+ const boardBottom=by+bh;
+ const leftLane=bx-34, rightLane=bx+bw+34;
+ const topLane=by-44, bottomLane=boardBottom+44;
+ const laneUse={topLeft:0,topRight:0,bottomLeft:0,bottomRight:0,other:0};
+ const routed=[];
+ function placeChannel(id,x,y,w,h){const e=$(id);Object.assign(e.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'})}
+ placeChannel('channelTop',bx-45,by-76,bw+90,67);
+ placeChannel('channelBottom',bx-45,boardBottom+9,bw+90,67);
+ placeChannel('channelLeft',bx-76,by-76,67,bh+152);
+ placeChannel('channelRight',bx+bw+9,by-76,67,bh+152);
+ function device(pin){
+  if(/^reader/.test(pin))return 'reader';
+  if(/^rte/.test(pin))return 'rte';
+  if(/^fire/.test(pin))return 'fire';
+  if(/^lock/.test(pin))return 'lock';
+  if(/^glass/.test(pin))return 'glass';
+  if(/^psu/.test(pin))return 'psu';
+  return null;
+ }
+ function rounded(points,radius=14){
+  const fmt=n=>Number(n.toFixed(2));
+  let d=`M${fmt(points[0].x)},${fmt(points[0].y)}`;
+  for(let i=1;i<points.length-1;i++){
+   const prev=points[i-1],cur=points[i],next=points[i+1];
+   const d1=Math.hypot(cur.x-prev.x,cur.y-prev.y),d2=Math.hypot(next.x-cur.x,next.y-cur.y);
+   if(d1<.1||d2<.1)continue;
+   const r=Math.min(radius,d1/2,d2/2);
+   const p1={x:cur.x+(prev.x-cur.x)*r/d1,y:cur.y+(prev.y-cur.y)*r/d1};
+   const p2={x:cur.x+(next.x-cur.x)*r/d2,y:cur.y+(next.y-cur.y)*r/d2};
+   d+=` L${fmt(p1.x)},${fmt(p1.y)} Q${fmt(cur.x)},${fmt(cur.y)} ${fmt(p2.x)},${fmt(p2.y)}`;
+  }
+  const last=points[points.length-1];return d+` L${fmt(last.x)},${fmt(last.y)}`;
+ }
+ wires.forEach(([a,b],index)=>{
+  const A=bounds(a),B=bounds(b);
+  let external=device(a),externalPin=a,boardPin=b,ext=A,terminal=B;
+  if(!external){external=device(b);externalPin=b;boardPin=a;ext=B;terminal=A}
+  let start,end,points;
+  if(external){
+   const top=!!byPin[externalPin].closest('[data-position="top-1"],[data-position="top-2"],[data-position="top-3"]');
+   const boardLeft=terminal.cx<bx+bw/2;
+   const side=boardLeft?'Left':'Right';
+   const key=(top?'top':'bottom')+side;
+   const n=laneUse[key]++;
+   // The entire loom is routed through dark top/bottom and side channels.
+   // Only the final short branch enters the terminal bank.
+   const xLane=(boardLeft?leftLane:rightLane)+(boardLeft?-1:1)*(n%7)*7;
+   // Spread routes within their own dark channel, rather than drifting
+   // across device faces or terminal labels as the loom grows.
+   const yLane=(top?topLane:bottomLane)+(top?-1:1)*(n%7)*7;
+   // Connect on the outside edge of the actual connector nearest the ACU.
+   // Top devices connect from their lower lip; bottom devices from upper lip.
+   start={x:ext.cx,y:top?ext.y+ext.h:ext.y};
+   // The Paxton connector is approached from its outside edge (never through text).
+   end={x:boardLeft?terminal.x:terminal.x+terminal.w,y:terminal.cy};
+   points=[start,{x:start.x,y:yLane},{x:xLane,y:yLane},{x:xLane,y:end.y},{x:end.x,y:end.y}];
+  }else{
+   start=edge(A,B,true);end=edge(B,A,true);
+   const n=laneUse.other++;
+   const side=A.cx<bx+bw/2?leftLane:rightLane;
+   points=[start,{x:side+(n%4)*9,y:start.y},{x:side+(n%4)*9,y:end.y},end];
+  }
+  // V4.9: square 90-degree panel wiring with no curved corners.
+  // Remove duplicate/collinear waypoints for clean horizontal/vertical runs.
+  const orthogonal=[];
+  for(const pt of points){
+   const last=orthogonal[orthogonal.length-1];
+   if(last&&Math.abs(last.x-pt.x)<0.01&&Math.abs(last.y-pt.y)<0.01)continue;
+   orthogonal.push(pt);
+   while(orthogonal.length>=3){
+    const [p,q,r]=orthogonal.slice(-3);
+    if((Math.abs(p.x-q.x)<0.01&&Math.abs(q.x-r.x)<0.01)||(Math.abs(p.y-q.y)<0.01&&Math.abs(q.y-r.y)<0.01))orthogonal.splice(-2,1);
+    else break;
+   }
+  }
+  points=orthogonal;
+  const d=points.map((pt,i)=>(i?'L':'M')+pt.x.toFixed(2)+','+pt.y.toFixed(2)).join(' ');
+  routed.push({points,wire:[a,b],index});
+  const selected=wireKey(a,b)===selectedWire;
+  if(selected){byPin[a].classList.add('trace-end');byPin[b].classList.add('trace-end')}
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',d);path.setAttribute('fill','none');
+  path.setAttribute('stroke',cableColour(a,b));
+  path.setAttribute('stroke-width',selected?'4.5':'3');path.setAttribute('stroke-linejoin','round');path.setAttribute('stroke-linecap','butt');
+  path.setAttribute('opacity',selectedWire&&!selected?'0.19':'1');
+  path.style.pointerEvents=mode==='remove'||mode==='trace'?'stroke':'none';
+  path.addEventListener('click',()=>{if(mode==='remove')remove(a,b);else if(mode==='trace'){selectedWire=selectedWire===wireKey(a,b)?null:wireKey(a,b);render()}});
+  if(blackCable(a,b)){const outline=path.cloneNode();outline.setAttribute('stroke','#d7d7d7');outline.setAttribute('stroke-width',selected?'6.5':'5');outline.style.pointerEvents='none';svg.append(outline)}
+  svg.append(path);
+  // Endpoint rings are intentionally unmasked: show the exact terminal edge
+  // even when the cable itself passes beneath a protected component box.
+  const colour=path.getAttribute('stroke');
+  for(const point of [start,end]){
+   const ring=document.createElementNS(ns,'circle');
+   ring.setAttribute('cx',String(point.x));ring.setAttribute('cy',String(point.y));
+   ring.setAttribute('r',selected?'5':'3.8');
+   ring.setAttribute('fill','#ffffff');ring.setAttribute('stroke',colour);
+   ring.setAttribute('stroke-width','2');
+   ring.setAttribute('opacity',selectedWire&&!selected?'0.25':'1');
+   ring.style.pointerEvents='none';svg.append(ring);
+  }
+ });
+ // Wire bridges: mark genuine crossings with a small raised jumper arc.
+ // All geometry stays in bench coordinates, so pinch zoom and Fit remain aligned.
+ function crossings(s,t){
+  const dx=s[1].x-s[0].x,dy=s[1].y-s[0].y;
+  const ex=t[1].x-t[0].x,ey=t[1].y-t[0].y;
+  const den=dx*ey-dy*ex;
+  if(Math.abs(den)<0.001)return null;
+  const ax=t[0].x-s[0].x,ay=t[0].y-s[0].y;
+  const u=(ax*ey-ay*ex)/den,v=(ax*dy-ay*dx)/den;
+  if(u<0.12||u>0.88||v<0.12||v>0.88)return null;
+  const len=Math.hypot(dx,dy);
+  if(len<28)return null;
+  return {x:s[0].x+u*dx,y:s[0].y+u*dy,ux:dx/len,uy:dy/len};
+ }
+ function segs(points){return points.slice(1).map((p,i)=>[points[i],p]).filter(([a,b])=>Math.hypot(b.x-a.x,b.y-a.y)>24)}
+ const crossingsDrawn=[];
+ routed.forEach((current,i)=>{
+  const currentSegs=segs(current.points);
+  routed.slice(0,i).forEach(previous=>{
+   for(const a of currentSegs)for(const b of segs(previous.points)){
+    const c=crossings(a,b);
+    if(!c||crossingsDrawn.some(q=>Math.hypot(q.x-c.x,q.y-c.y)<19))continue;
+    crossingsDrawn.push(c);
+    const {x,y,ux,uy}=c,half=7;
+    const x1=x-ux*half,y1=y-uy*half,x2=x+ux*half,y2=y+uy*half;
+    const normalX=-uy,normalY=ux;
+    const d=`M${x1},${y1} Q${x+normalX*12},${y+normalY*12} ${x2},${y2}`;
+    const [aPin,bPin]=current.wire;
+    const colour=cableColour(aPin,bPin);
+    // Clear a small separation around the crossing, then draw a visible bridge.
+    const under=document.createElementNS(ns,'path');under.setAttribute('d',d);
+    under.setAttribute('stroke','#0b1712');under.setAttribute('stroke-width','8');under.setAttribute('fill','none');
+    under.setAttribute('stroke-linecap','round');under.style.pointerEvents='none';svg.append(under);
+    const bridge=document.createElementNS(ns,'path');bridge.setAttribute('d',d);
+    bridge.setAttribute('stroke',colour);bridge.setAttribute('stroke-width','3');bridge.setAttribute('fill','none');
+    bridge.setAttribute('stroke-linecap','round');bridge.style.pointerEvents='none';svg.append(bridge);
+   }
+  });
+ });
+}
+
+// Draw the meter's actual red/black leads to whichever terminals were probed.
+// Geometry uses unscaled bench coordinates; the whole bench zooms as one layer.
+const probeOverlay=document.createElementNS('http://www.w3.org/2000/svg','svg');
+probeOverlay.id='probe-lead-overlay';probeOverlay.setAttribute('aria-label','Multimeter leads showing probe connections');
+$('bench').append(probeOverlay);
+function drawProbeLeads(){
+ const bench=$('bench'),meter=bench.querySelector('.meter');
+ if(!meter)return;
+ const base=bench.getBoundingClientRect(),zoom=fitScale||1;
+ const width=bench.offsetWidth,height=bench.offsetHeight;
+ probeOverlay.setAttribute('viewBox',`0 0 ${width} ${height}`);
+ probeOverlay.replaceChildren();
+ const local=(r,x,y)=>({x:(x-base.left)/zoom,y:(y-base.top)/zoom});
+ const mr=meter.getBoundingClientRect();
+ const make=(tag,attrs)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));probeOverlay.append(e);return e};
+ [['red',red,0.35],['black',black,0.7]].forEach(([colour,pin,fraction])=>{
+   const start=local(mr,mr.left+mr.width*fraction,mr.bottom-4);
+   const target=pin&&byPin[pin];
+   const r=target?.getBoundingClientRect();
+   const end=r?local(r,r.left+r.width/2,r.top+r.height/2):{x:start.x+(colour==='red'?-22:22),y:start.y+48};
+   const direction=end.x>=start.x?1:-1;
+   const d=`M ${start.x} ${start.y} C ${start.x+direction*46} ${start.y+60}, ${end.x-direction*52} ${end.y-58}, ${end.x} ${end.y}`;
+   if(colour==='black')make('path',{d,class:'lead-shadow'});
+   make('path',{d,class:'lead-'+colour});
+   const dx=end.x-start.x,dy=end.y-start.y,len=Math.hypot(dx,dy)||1;
+   const ux=dx/len,uy=dy/len;
+   const neck={x:end.x-ux*19,y:end.y-uy*19};
+   const tip={x:end.x-ux*3,y:end.y-uy*3};
+   make('line',{x1:neck.x,y1:neck.y,x2:tip.x,y2:tip.y,class:'probe-body',stroke:colour==='red'?'#e84049':'#111'});
+   make('line',{x1:tip.x,y1:tip.y,x2:end.x,y2:end.y,class:'probe-tip'});
+   if(r)make('circle',{cx:end.x,cy:end.y,r:4.5,class:'probe-contact',stroke:colour==='red'?'#e84049':'#151515'});
+ });
+}
+
+function fit(scaleOverride){const view=$('viewport'),bench=$('bench');bench.style.zoom='1';const baseW=bench.offsetWidth,baseH=bench.offsetHeight;const scale=scaleOverride||Math.min((view.clientWidth-8)/baseW,(view.clientHeight-8)/baseH);fitScale=Math.max(.06,Math.min(1.6,scale));bench.style.zoom=String(fitScale);requestAnimationFrame(()=>{draw();drawProbeLeads()})}
+function setMode(m){mode=m;first=null;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.mode===m));buttons.forEach(b=>b.classList.remove('marked'));$('hint').textContent={wire:'Tap two terminals OR drag from one terminal to another to connect.',remove:'Tap a cable to remove it. Tap a terminal to remove its first cable.',trace:'Tap a cable to highlight both ends. Tap again to clear.',red:'RED probe selected. Tap a terminal.',black:'BLACK probe selected. Tap a terminal.'}[m];draw()}
+let suppressTerminalClickUntil=0;
+buttons.forEach(btn=>btn.addEventListener('click',()=>{if(Date.now()<suppressTerminalClickUntil)return;const p=btn.dataset.pin;if(mode==='red'){red=p;state()}else if(mode==='black'){black=p;state()}else if(mode==='wire'){if(!first){first=p;btn.classList.add('marked');$('hint').textContent='Selected '+p+' — tap the destination terminal.'}else{const prev=first;first=null;buttons.forEach(b=>b.classList.remove('marked'));add(prev,p);$('hint').textContent='Tap two terminals or drag between terminals to connect.'}}else if(mode==='remove'){const w=wires.find(w=>w.includes(p));if(w)remove(...w)}else if(mode==='trace'){const w=wires.find(w=>w.includes(p));if(w){selectedWire=wireKey(...w);render()}}}));
+// Mobile and desktop: drag directly between terminals. Existing tap-to-connect remains available.
+let wireDrag=null;
+const dragOverlay=document.createElementNS('http://www.w3.org/2000/svg','svg');
+dragOverlay.setAttribute('aria-hidden','true');
+dragOverlay.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:99999;overflow:visible';
+const dragLine=document.createElementNS('http://www.w3.org/2000/svg','line');
+dragLine.setAttribute('stroke-width','5');dragLine.setAttribute('stroke-linecap','round');
+dragLine.setAttribute('stroke-dasharray','10 7');dragOverlay.append(dragLine);document.body.append(dragOverlay);
+function stopDrag(e,cancel=false){if(!wireDrag)return;const start=wireDrag;wireDrag=null;dragLine.style.display='none';
+  if(!start.moved)return;
+  suppressTerminalClickUntil=Date.now()+450;
+  const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-pin]');
+  buttons.forEach(b=>b.classList.remove('drag-target'));
+  if(!cancel&&hit&&hit.dataset.pin!==start.pin){first=null;buttons.forEach(b=>b.classList.remove('marked'));add(start.pin,hit.dataset.pin);$('hint').textContent='Cable connected: '+start.pin+' ↔ '+hit.dataset.pin+'. Drag another cable or tap terminals.'}
+  else $('hint').textContent='Drag a cable onto another terminal to connect it.';
+}
+buttons.forEach(btn=>btn.addEventListener('pointerdown',e=>{if(mode!=='wire'||e.button>0)return;wireDrag={pin:btn.dataset.pin,x:e.clientX,y:e.clientY,moved:false};}));
+document.addEventListener('pointermove',e=>{if(!wireDrag)return;const d=wireDrag;if(!d.moved&&Math.hypot(e.clientX-d.x,e.clientY-d.y)<9)return;d.moved=true;
+  dragLine.style.display='block';dragLine.setAttribute('x1',d.x);dragLine.setAttribute('y1',d.y);dragLine.setAttribute('x2',e.clientX);dragLine.setAttribute('y2',e.clientY);
+  dragLine.setAttribute('stroke',({red:'#f34b4b',black:'#111',blue:'#52a9ef',yellow:'#f3d13d',green:'#39c66c',white:'#fff'})[cableChoice]||'#f34b4b');
+  buttons.forEach(b=>b.classList.toggle('drag-target',b===document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-pin]')));
+  if(e.cancelable)e.preventDefault();
+},{passive:false});
+document.addEventListener('pointerup',e=>stopDrag(e));document.addEventListener('pointercancel',e=>stopDrag(e,true));
+$('undoWire').addEventListener('click',()=>{const last=wireHistory.pop();if(!last){$('hint').textContent='Nothing to undo yet.';return;}wires=last.wires;cableKinds=last.kinds;selectedWire=null;render();$('hint').textContent='Last wiring change undone.'});
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+$('example').addEventListener('click',()=>{rememberWiring();wires=example.map(w=>[...w]);cableKinds=Object.fromEntries(wires.map(([a,b])=>[wireKey(a,b),inferKind(a,b)]));render()});$('clear').addEventListener('click',()=>{rememberWiring();wires=[];cableKinds={};render()});$('reset').addEventListener('click',()=>{fire=false;glass=false;rte=false;cardUntil=0;relay=false;$('fault').value='none';state()});
+for(const [id,mode] of [['meterDC','dc'],['meterContinuity','continuity']]){
+  $(id).addEventListener('click',()=>{
+    meterMode=mode;
+    $('meterDC').classList.toggle('selected',mode==='dc');
+    $('meterContinuity').classList.toggle('selected',mode==='continuity');
+    $('meterDC').setAttribute('aria-pressed',String(mode==='dc'));
+    $('meterContinuity').setAttribute('aria-pressed',String(mode==='continuity'));
+    state();
+  });
+}
+const releaseInput=$('releaseSeconds');releaseInput.addEventListener('input',()=>{releaseDurationMs=Number(releaseInput.value)*1000;$('releaseSetting').textContent=releaseInput.value+'s';state()});
+$('card').addEventListener('click',()=>{const s=state();if(s.reader){readerFlashStart=Date.now();cardUntil=Date.now()+releaseDurationMs;state()}else $('message').textContent='Reader offline — load/check circuit first'});
+const rteButton=$('rte');
+let rteHeld=false;
+function startRte(e){
+  if(rteHeld)return;
+  rteHeld=true;rte=true;
+  if(e&&e.pointerId!==undefined){try{rteButton.setPointerCapture(e.pointerId)}catch(_){}}
+  rteButton.classList.add('rte-held');
+  const s=graph(relay);
+  if(s.acu&&reachable(s.g,'exit').has('exitG'))cardUntil=Date.now()+releaseDurationMs;
+  state();
+}
+function endRte(){
+  if(!rteHeld)return;
+  const s=graph(relay);
+  if(s.acu&&reachable(s.g,'exit').has('exitG'))cardUntil=Date.now()+releaseDurationMs;
+  rteHeld=false;rte=false;
+  rteButton.classList.remove('rte-held');state();
+}
+rteButton.addEventListener('pointerdown',startRte);
+for(const eventName of ['pointerup','pointercancel','lostpointercapture'])rteButton.addEventListener(eventName,endRte);
+rteButton.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();startRte()}});
+rteButton.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();endRte()}});
+rteButton.addEventListener('blur',endRte);
+window.addEventListener('blur',endRte);
+
+$('glass').addEventListener('click',()=>{glass=!glass;state()});$('glassFace').addEventListener('click',()=>{$('glass').click()});$('glassReset').addEventListener('click',()=>{glass=false;state()});$('fire').addEventListener('click',()=>{fire=!fire;state()});$('fireFace').addEventListener('click',()=>{$('fire').click()});$('fireReset').addEventListener('click',()=>{fire=false;state()});$('fault').addEventListener('change',state);
+try{cableKinds=JSON.parse(localStorage.getItem('paxton-v29-cable-kinds')||'{}')||{}}catch{cableKinds={}}
+try{const old=JSON.parse(localStorage.getItem('paxton-v21-wires'));if(Array.isArray(old))wires=old.filter(w=>Array.isArray(w)&&w.length===2&&valid.has(w[0])&&valid.has(w[1]))}catch{}
+document.querySelectorAll('[data-cable]').forEach(button=>button.addEventListener('click',()=>{cableChoice=button.dataset.cable;document.querySelectorAll('[data-cable]').forEach(b=>b.classList.toggle('active',b===button));setMode('wire');$('hint').textContent='Selected '+button.textContent.trim()+' cable. Tap the first terminal, then the destination.'}));
+$('fit').addEventListener('click',()=>fit());
+// Two-finger pinch to zoom, keeping the fingers' midpoint in place.
+const viewport=$('viewport');let pinch=null;
+function distance(t){return Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY)}
+viewport.addEventListener('touchstart',e=>{if(e.touches.length===2){const rect=viewport.getBoundingClientRect();const x=(e.touches[0].clientX+e.touches[1].clientX)/2-rect.left;const y=(e.touches[0].clientY+e.touches[1].clientY)/2-rect.top;pinch={distance:distance(e.touches),scale:fitScale,x,y,contentX:(viewport.scrollLeft+x)/fitScale,contentY:(viewport.scrollTop+y)/fitScale};e.preventDefault()}},{passive:false});
+viewport.addEventListener('touchmove',e=>{if(e.touches.length===2){if(!pinch)return;e.preventDefault();const next=Math.max(.06,Math.min(2.5,pinch.scale*distance(e.touches)/pinch.distance));fit(next);viewport.scrollLeft=pinch.contentX*fitScale-pinch.x;viewport.scrollTop=pinch.contentY*fitScale-pinch.y;}},{passive:false});
+viewport.addEventListener('touchend',e=>{if(e.touches.length<2)pinch=null},{passive:true});
+viewport.addEventListener('touchcancel',()=>pinch=null,{passive:true});
+for(const id of ['glassFace','fireFace'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$(id).click()}});
+window.addEventListener('resize',()=>fit());window.addEventListener('orientationchange',()=>setTimeout(()=>fit(),250));setInterval(state,100);render();setTimeout(()=>fit(),100);
+})();
+</script><script id="v40-xp95-state">
+(()=>{const state=document.getElementById('fireState'),face=document.getElementById('fireFace');if(!state||!face)return;const update=()=>{const active=state.textContent.trim().toUpperCase()==='ACTIVE';face.classList.toggle('xp95-active',active);const led=face.querySelector('.xp95-led');if(led)led.style.background=active?'#f42d29':'#526658';};new MutationObserver(update).observe(state,{childList:true,characterData:true,subtree:true});update();})();
+</script></body></html>
